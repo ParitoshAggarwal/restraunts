@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+{%  block content %}
+<h1>FIRST HEAD</h1>
+    <p>First para it is if you know what i nmean.</p>
+    <p>Random number is {{ num }}</p>
+    {% for sumitem in sumlist %}
+        {{ sumitem }}<br>
+    {% endfor %}
+{% endblock content %}
