@@ -15,7 +15,7 @@ Including another URLconf
 """
 from django.conf.urls import url
 from django.contrib import admin
-from restraunt.views import list_of_restraunts
+from restraunt.views import list_of_restraunts, restlistview, restdetailview, restform, restformcreateview
 from django.views.generic import TemplateView
 
 urlpatterns = [
@@ -23,5 +23,13 @@ urlpatterns = [
     url(r'^$', TemplateView.as_view(template_name='home.html')),
     url(r'^about/$', TemplateView.as_view(template_name='about.html')),
     url(r'^contact/$', TemplateView.as_view(template_name='contact.html')),
-    url(r'^restraunts_list/$', list_of_restraunts)
+    url(r'^restraunts_list/(?P<rest_id>\w+)$', restdetailview.as_view()),
+    url(r'^restraunt/create/$', restformcreateview.as_view()),
+
+
+    # url(r'^restraunts_list/(?P<pk>\w+)$', restdetailview.as_view()),
+    #  url(r'^restraunts_list/(?P<slug>\w+)$', restlistview.as_view()),
+
+
+    url(r'^restraunts_list/$', restlistview.as_view())
 ]

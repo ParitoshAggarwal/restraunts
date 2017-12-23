@@ -1,0 +1,13 @@
+{%  extends 'base.html' %}
+
+{% block title %}Restraunts | {{ block.super }} {% endblock title %}
+
+{%  block content %}
+
+    <h1>{{ object.name }}<small> {{ object.location }}</small></h1>
+
+    <p>{{ object.timestamp }}. updated-> {{ object.timestamp | timesince }}</p>
+
+
+
+{%  endblock content %}

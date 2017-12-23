@@ -1,0 +1,21 @@
+{%  extends 'base.html' %}
+
+{% block title %}Add Restraunts | {{ block.super }} {% endblock title %}
+
+{%  block content %}
+
+    <h1>Add Restraunt</h1>
+    <form method="POST">{%  csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Save</button>
+    </form>
+
+
+
+{%  endblock content %}
+
+
+
+{#<input type=text name="name" placeholder="Name"><br><br>#}
+{#        <input type=text name="location" placeholder="Location"><br><br>#}
+{#        #}
