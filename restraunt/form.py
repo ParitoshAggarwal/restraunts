@@ -1,7 +1,9 @@
 from django import forms
 from .models import restlist
 
+
 class restcreate(forms.Form):
+
     name = forms.CharField()
     location = forms.CharField(required=False)
 

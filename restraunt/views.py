@@ -1,11 +1,16 @@
 import random
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import render, get_object_or_404
 from django.views import View
 from django.views.generic import TemplateView, ListView, DetailView, CreateView
 from .models import restlist
 from django.db.models import Q
 from .form import restcreate, restcreateclass
+
 from django.http import HttpResponseRedirect
+
+
 # Create your views here.
 
 #
@@ -86,6 +91,7 @@ class restlistview(ListView):
 
 class restdetailview(DetailView):
     template_name = 'restraunt/restraunt_detailview.html'
+
     # queryset = restlist.objects.all()
 
     # def get_context_data(self, *args, **kwargs):
@@ -98,37 +104,43 @@ class restdetailview(DetailView):
         object = get_object_or_404(restlist, id=rest_id)
         return object
 
-
-# def restform(request):
-#     template_name = 'restraunt/form.html'
-#     form = restcreate(request.POST or None)
-#
-#     if request.method == "POST":
-#
-#         # name = request.POST.get("title")
-#         # location = request.POST.get("location")
-#         # obj = restlist.objects.create(
-#         #     name=name,
-#         #     location=location
-#         # )
-#         # form = restcreate(request.POST)
-#
-#         if form.is_valid():
-#             restlist.objects.create(
-#                 name=form.cleaned_data.get("name"),
-#                 location=form.cleaned_data.get("location")
-#             )
-#             return HttpResponseRedirect('/restraunts_list/')
-#         else:
-#             print(form.errors)
-#     context = {"form": form}
-#     return render(request, template_name, context)
-#
-
-class restformcreateview(CreateView):
+@login_required(login_url='/login')
+def restform(request):
     template_name = 'restraunt/form.html'
+    form = restcreateclass(request.POST or None)
+
+    if request.method == "POST":
+
+        # name = request.POST.get("title")
+        # location = request.POST.get("location")
+        # obj = restlist.objects.create(
+        #     name=name,
+        #     location=location
+        # )
+        # form = restcreate(request.POST)
+
+        if form.is_valid():
+            if request.user.is_authenticated():
+                instance = form.save(commit=False)
+                instance.owner = request.user
+                instance.save()
+                return HttpResponseRedirect('/')
+            else:
+                return HttpResponseRedirect('/login')
+        else:
+            print(form.errors)
+    context = {"form": form}
+    return render(request, template_name, context)
+
+
+
+class restformcreateview(LoginRequiredMixin, CreateView):
+    template_name = 'restraunt/form.html'
+    login_url = '/login/'
     form_class = restcreateclass
     success_url = '/restraunts_list/'
 
-
-
+    def form_valid(self, form):
+        instance = form.save(commit=False)
+        instance.owner = self.request.user
+        return super(restformcreateview, self).form_valid(form)
